@@ -8,6 +8,7 @@
 #include "Item/ItemObject.h"
 #include "GameState_BodyCredit.h"
 #include "Inventory/AC_InventoryComponent.h"
+#include "Inventory/Inventory_LootableGridWidget.h"
 
 void UInventory_Widget::NativeConstruct()
 {

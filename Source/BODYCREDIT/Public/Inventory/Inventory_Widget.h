@@ -19,7 +19,7 @@ public:
 	class UInventory_GridWidget* InventoryGridWidget;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UInventory_GridWidget* InventoryItemGridWidget;
+	class UInventory_LootableGridWidget* InventoryItemGridWidget;
 
 	UPROPERTY(EditAnywhere)
 	class UAC_InventoryComponent* InventoryComp;
