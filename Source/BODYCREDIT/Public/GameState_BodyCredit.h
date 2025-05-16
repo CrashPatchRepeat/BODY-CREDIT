@@ -13,9 +13,10 @@ UCLASS()
 class BODYCREDIT_API AGameState_BodyCredit : public AGameStateBase
 {
 	GENERATED_BODY()
+
+	AGameState_BodyCredit();
 	
 public:
 	void SpawnItemFromActor(class UItemObject* ItemObject, AActor* Actor, bool GroundClamp);
-
 
 };

@@ -17,6 +17,7 @@ class BODYCREDIT_API UNetGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+
 	virtual void Init() override;
 
 public:
@@ -28,4 +29,7 @@ public:
 
 	UFUNCTION()
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Item Data")
+    UDataTable* ItemDataTable;
 };

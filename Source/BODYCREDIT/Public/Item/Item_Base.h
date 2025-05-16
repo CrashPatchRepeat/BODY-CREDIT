@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ItemDT.h"
-#include "Engine/DataTable.h"
 #include "Item_Base.generated.h"
 
 UCLASS()
@@ -27,7 +26,7 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UStaticMeshComponent* StaticMeshComp;
+	class UStaticMeshComponent* MeshComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class USphereComponent* SphereComp;
@@ -40,9 +39,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDataTable* ItemDataTable;
-
-	FItemData* ItemData;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FItemData ItemData;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UMaterialInterface* Icon;
 
@@ -50,6 +50,10 @@ public:
 	class UMaterialInterface* RotatedIcon;
 
 	FString ContextString = TEXT("Item Data");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName RowName;
+
 public:
 	UFUNCTION()
     void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -59,5 +63,5 @@ public:
 
 	virtual UItemObject* GetDefaultItemObject();
 
-	void LoadItemData();
+	virtual void OnConstruction(const FTransform& Transform) override;
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Item/ItemDT.h"
 #include "Inventory_ItemWidget.generated.h"
 
 /**
@@ -30,8 +31,11 @@ public:
 
 	float TileSize = 0.f;
 
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UItemObject* ItemObject;*/
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UItemObject* ItemObject;
+	FItemData ItemObject;
 
 	FVector2D Size;
 
@@ -51,6 +55,8 @@ public:
 	virtual void NativeConstruct() override;
 
 	FIntPoint StartTilePosition;
+
+
 
 public:
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

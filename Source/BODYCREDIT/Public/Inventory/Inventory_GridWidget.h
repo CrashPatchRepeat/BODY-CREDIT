@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Inventory/Inventory_Line.h"
+#include "Item/ItemDT.h"
 #include "Inventory_GridWidget.generated.h"
 
 /**
@@ -65,9 +66,11 @@ public:
 	UFUNCTION()
 	void Refresh();
 
-	UFUNCTION()
-	void OnItemRemoved(class UItemObject* ItemObject);
+	//UFUNCTION()
+	//void OnItemRemoved(class UItemObject* ItemObject);
 
+	UFUNCTION()
+	void OnItemRemoved(FItemData& ItemObject);
 
 	UItemObject* GetPayLoad(class UDragDropOperation* Operation);
 

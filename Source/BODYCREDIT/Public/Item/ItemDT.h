@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Engine/DataTable.h"
 #include "ItemDT.generated.h"
 
 UENUM(BlueprintType)
@@ -19,7 +18,6 @@ struct FItemData : public FTableRowBase
 {
     GENERATED_BODY()
 
-public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     int32 ID;
 
@@ -36,7 +34,7 @@ public:
     bool Stackable;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-    UTexture2D* Thumbnail;
+    class UTexture2D* Thumbnail;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
     int32 Index;
@@ -82,4 +80,6 @@ public:
         , StartPosition(0, 0)
     {
     }
+
+
 };

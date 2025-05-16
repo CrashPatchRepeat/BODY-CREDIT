@@ -6,7 +6,7 @@
 
 AItem_Grenade::AItem_Grenade()
 {
-	/*ConstructorHelpers::FObjectFinder<UMaterialInterface>Temp_Mat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Item/Icons/M_Icon_Grenade.M_Icon_Grenade'"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface>Temp_Mat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Item/Icons/M_Icon_Grenade.M_Icon_Grenade'"));
 	if (Temp_Mat.Succeeded())
 	{
 		Icon = Temp_Mat.Object;
@@ -16,12 +16,12 @@ AItem_Grenade::AItem_Grenade()
 	if (Temp_MatR.Succeeded())
 	{
 		RotatedIcon = Temp_MatR.Object;
-	}*/
+	}
 
-	ItemData = ItemDataTable->FindRow<FItemData>("Grenade", ContextString);
+	//ItemData = ItemDataTable->FindRow<FItemData>("Grenade", ContextString);
+	//MeshComp->SetStaticMesh(ItemData->Mesh);
 
-	Width = 1;
-	Height = 1;
+	RowName = TEXT("Grenade");
 }
 
 UItemObject* AItem_Grenade::GetDefaultItemObject()

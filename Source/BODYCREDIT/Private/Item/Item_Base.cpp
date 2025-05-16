@@ -7,25 +7,46 @@
 #include "Engine/StaticMesh.h"
 #include "Characters/CNox_Runner.h"
 #include "Inventory/AC_InventoryComponent.h"
+#include "Global.h"
+#include "Engine/DataTable.h"
+#include "GameState_BodyCredit.h"
 
 // Sets default values
 AItem_Base::AItem_Base()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	RootComponent = SphereComp;
 
-	StaticMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComp"));
-	StaticMeshComp->SetupAttachment(RootComponent);
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	MeshComp->SetupAttachment(RootComponent);
 
 	SphereComp->SetGenerateOverlapEvents(true);
 
-	ConstructorHelpers::FObjectFinder<UDataTable> TempDT(
-		TEXT("/Script/Engine.DataTable'/Game/Item/DT_ItemData.DT_ItemData'"));
+}
 
-	if (TempDT.Succeeded()) {
-		ItemDataTable = TempDT.Object;
+void AItem_Base::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+
+	if (!ItemDataTable)
+	{
+		ItemDataTable = LoadObject<UDataTable>(nullptr, TEXT("/Game/Item/DT_ItemData.DT_ItemData"));
+	}
+
+	if (ItemDataTable)
+	{
+		FItemData* TempItemData = ItemDataTable->FindRow<FItemData>(RowName, TEXT(""));
+		if (TempItemData)
+		{
+			ItemData = *TempItemData;
+			if (MeshComp)
+			{
+				MeshComp->SetStaticMesh(ItemData.Mesh);
+			}
+		}
 	}
 }
 
@@ -33,7 +54,7 @@ AItem_Base::AItem_Base()
 void AItem_Base::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (!IsValid(ItemObject)) {
 		ItemObject = GetDefaultItemObject();
 	}
@@ -64,9 +85,3 @@ UItemObject* AItem_Base::GetDefaultItemObject()
 {
 	return NewObject<UItemObject>(this);
 }
-
-void AItem_Base::LoadItemData()
-{
-
-}
-

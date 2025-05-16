@@ -6,6 +6,10 @@
 #include "Item/Item_Base.h"
 
 
+AGameState_BodyCredit::AGameState_BodyCredit()
+{
+	
+}
 
 void AGameState_BodyCredit::SpawnItemFromActor(UItemObject* ItemObject, AActor* Actor, bool GroundClamp)
 {
@@ -31,3 +35,4 @@ void AGameState_BodyCredit::SpawnItemFromActor(UItemObject* ItemObject, AActor* 
 	
 	SpawnedItem->ItemObject = ItemObject;
 }
+

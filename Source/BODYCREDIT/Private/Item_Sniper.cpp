@@ -6,7 +6,7 @@
 
 AItem_Sniper::AItem_Sniper()
 {
-	ConstructorHelpers::FObjectFinder<UMaterialInterface>Temp_Mat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Item/Icons/M_Icon_Weapon.M_Icon_Weapon'"));
+	/*ConstructorHelpers::FObjectFinder<UMaterialInterface>Temp_Mat(TEXT("/Script/Engine.MaterialInstanceConstant'/Game/Item/Icons/M_Icon_Weapon.M_Icon_Weapon'"));
 	if (Temp_Mat.Succeeded())
 	{
 		Icon = Temp_Mat.Object;
@@ -16,7 +16,9 @@ AItem_Sniper::AItem_Sniper()
 	if (Temp_MatR.Succeeded())
 	{
 		RotatedIcon = Temp_MatR.Object;
-	}
+	}*/
+
+	RowName = TEXT("Sniper");
 }
 
 UItemObject* AItem_Sniper::GetDefaultItemObject()
@@ -31,3 +33,4 @@ UItemObject* AItem_Sniper::GetDefaultItemObject()
 
 	return NewItem;
 }
+

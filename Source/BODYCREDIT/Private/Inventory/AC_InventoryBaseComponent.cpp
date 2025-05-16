@@ -21,8 +21,11 @@ void UAC_InventoryBaseComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	Items.SetNum(Columns * Rows);
+	for (int32 i = 0; i < Columns * Rows; ++i)
+	{
+		Items.Add(i, FItemData());
+		RItems.Add(FItemData(), i);
+	}
 }
 
 
@@ -39,9 +42,37 @@ void UAC_InventoryBaseComponent::TickComponent(float DeltaTime, ELevelTick TickT
 }
 
 
-bool UAC_InventoryBaseComponent::TryAddItem(UItemObject* ItemObject)
+//bool UAC_InventoryBaseComponent::TryAddItem(UItemObject* ItemObject)
+//{
+//	if (IsValid(ItemObject))
+//	{
+//		for (int32 i = 0; i < Items.Num(); ++i)
+//		{
+//			if (IsRoomAvailable(ItemObject, i))
+//			{
+//				AddItemAt(ItemObject, i);
+//				return true;
+//			}
+//		}
+//		ItemObject->Rotate();
+//
+//		for (int32 i = 0; i < Items.Num(); ++i)
+//		{
+//			if (IsRoomAvailable(ItemObject, i))
+//			{
+//				AddItemAt(ItemObject, i);
+//				return true;
+//			}
+//		}
+//
+//	}
+//	return false;
+//}
+
+bool UAC_InventoryBaseComponent::TryAddItem(FItemData& ItemObject)
 {
-	if (IsValid(ItemObject))
+
+	if (!ItemObject.Mesh)
 	{
 		for (int32 i = 0; i < Items.Num(); ++i)
 		{
@@ -51,7 +82,7 @@ bool UAC_InventoryBaseComponent::TryAddItem(UItemObject* ItemObject)
 				return true;
 			}
 		}
-		ItemObject->Rotate();
+		ItemObject.Rotated = !ItemObject.Rotated;
 
 		for (int32 i = 0; i < Items.Num(); ++i)
 		{
@@ -82,12 +113,15 @@ int32 UAC_InventoryBaseComponent::TileToIndex(FInventoryTile& Tile)
 	return Result = Tile.X + (Tile.Y * Columns);
 }
 
-void UAC_InventoryBaseComponent::AddItemAt(class UItemObject* ItemObject, int32 TopLeftIndex)
+void UAC_InventoryBaseComponent::AddItemAt(FItemData& ItemObject, int32 TopLeftIndex)
 {
 	FInventoryTile ResultTile;
 
 	FInventoryTile TempTile = IndexToTile(TopLeftIndex);
-	FIntPoint TempDimension = ItemObject->GetDimension();
+	FIntPoint TempDimension = ItemObject.Dimensions;
+
+	ItemObject.Index = TopLeftIndex;
+	ItemObject.StartPosition = FIntPoint(TempTile.X, TempTile.Y);
 
 	for (int32 i = TempTile.X; i < (TempDimension.X + TempTile.X); ++i)
 	{
@@ -97,8 +131,9 @@ void UAC_InventoryBaseComponent::AddItemAt(class UItemObject* ItemObject, int32 
 			ResultTile.Y = j;
 			if (IsTileValid(ResultTile))
 			{
-				Items[TileToIndex(ResultTile)] = ItemObject;
-				ItemObject->StartPosition = FIntPoint(TempTile.X, TempTile.Y);
+				int32 TileIndex = TileToIndex(ResultTile);
+				Items[TileIndex] = ItemObject;
+				RItems.Add(ItemObject, TileIndex);
 
 				// GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Green, FString::Printf(TEXT("Item Index %d"), TileToIndex(ResultTile)));
 			}
@@ -108,12 +143,68 @@ void UAC_InventoryBaseComponent::AddItemAt(class UItemObject* ItemObject, int32 
 	IsDirty = true;
 }
 
-bool UAC_InventoryBaseComponent::IsRoomAvailable(class UItemObject* ItemObject, int32 TopLeftIndex)
+//void UAC_InventoryBaseComponent::AddItemAt(class UItemObject* ItemObject, int32 TopLeftIndex)
+//{
+//	FInventoryTile ResultTile;
+//
+//	FInventoryTile TempTile = IndexToTile(TopLeftIndex);
+//	FIntPoint TempDimension = ItemObject->GetDimension();
+//
+//	for (int32 i = TempTile.X; i < (TempDimension.X + TempTile.X); ++i)
+//	{
+//		for (int32 j = TempTile.Y; j < (TempDimension.Y + TempTile.Y); ++j)
+//		{
+//			ResultTile.X = i;
+//			ResultTile.Y = j;
+//			if (IsTileValid(ResultTile))
+//			{
+//				Items[TileToIndex(ResultTile)] = ItemObject;
+//				ItemObject->StartPosition = FIntPoint(TempTile.X, TempTile.Y);
+//
+//				// GEngine->AddOnScreenDebugMessage(3, 1.f, FColor::Green, FString::Printf(TEXT("Item Index %d"), TileToIndex(ResultTile)));
+//			}
+//		}
+//	}
+//
+//	IsDirty = true;
+//}
+
+//bool UAC_InventoryBaseComponent::IsRoomAvailable(class UItemObject* ItemObject, int32 TopLeftIndex)
+//{
+//	FInventoryTile ResultTile;
+//
+//	FInventoryTile TempTile = IndexToTile(TopLeftIndex);
+//	FIntPoint TempDimension = ItemObject->GetDimension();
+//
+//	for (int32 i = TempTile.X; i < (TempDimension.X + TempTile.X); ++i)
+//	{
+//		for (int32 j = TempTile.Y; j < (TempDimension.Y + TempTile.Y); ++j)
+//		{
+//			ResultTile.X = i;
+//			ResultTile.Y = j;
+//
+//			if (!IsTileValid(ResultTile))
+//			{
+//				return false;
+//			}
+//
+//			UItemObject* TempItemObject = GetItemAtIndex(TileToIndex(ResultTile));
+//			if (IsValid(TempItemObject))
+//			{
+//				return false;
+//			}
+//		}
+//	}
+//
+//	return true;
+//}
+
+bool UAC_InventoryBaseComponent::IsRoomAvailable(FItemData& ItemObject, int32 TopLeftIndex)
 {
 	FInventoryTile ResultTile;
 
 	FInventoryTile TempTile = IndexToTile(TopLeftIndex);
-	FIntPoint TempDimension = ItemObject->GetDimension();
+	FIntPoint TempDimension = ItemObject.Dimensions;
 
 	for (int32 i = TempTile.X; i < (TempDimension.X + TempTile.X); ++i)
 	{
@@ -127,8 +218,14 @@ bool UAC_InventoryBaseComponent::IsRoomAvailable(class UItemObject* ItemObject, 
 				return false;
 			}
 
-			UItemObject* TempItemObject = GetItemAtIndex(TileToIndex(ResultTile));
+			/*FItemData TempItemObject = GetItemAtIndex(TileToIndex(ResultTile));
 			if (IsValid(TempItemObject))
+			{
+				return false;
+			}*/
+
+			int32 TileIndex = TileToIndex(ResultTile);
+			if (Items.Contains(TileIndex))
 			{
 				return false;
 			}
@@ -165,22 +262,33 @@ bool UAC_InventoryBaseComponent::IsTileValid(FInventoryTile& Tile)
 	return false;
 }
 
-UItemObject* UAC_InventoryBaseComponent::GetItemAtIndex(int32 Index)
+FItemData UAC_InventoryBaseComponent::GetItemAtIndex(int32 Index)
 {
-	if (Items.IsValidIndex(Index))
+	if (Items.Contains(Index))
 	{
 		return Items[Index];
 	}
 
-	return nullptr;
+	return FItemData();
 }
 
-TMap<UItemObject*, FInventoryTile> UAC_InventoryBaseComponent::GetAllItems()
+//UItemObject* UAC_InventoryBaseComponent::GetItemAtIndex(int32 Index)
+//{
+//	if (Items.IsValidIndex(Index))
+//	{
+//		return Items[Index];
+//	}
+//
+//	return nullptr;
+//}
+
+
+TMap<FItemData, FInventoryTile> UAC_InventoryBaseComponent::GetAllItems()
 {
-	TMap<UItemObject*, FInventoryTile> AllItem;
+	TMap<FItemData, FInventoryTile> AllItem;
 	for (int32 i = 0; i < Items.Num(); ++i)
 	{
-		if (IsValid(Items[i]))
+		if (Items.Contains(i))
 		{
 			if (!AllItem.Contains(Items[i]))
 			{
@@ -191,20 +299,49 @@ TMap<UItemObject*, FInventoryTile> UAC_InventoryBaseComponent::GetAllItems()
 	return AllItem;
 }
 
-void UAC_InventoryBaseComponent::RemoveItem(UItemObject* ItemObject)
+//TMap<UItemObject*, FInventoryTile> UAC_InventoryBaseComponent::GetAllItems()
+//{
+	//TMap<UItemObject*, FInventoryTile> AllItem;
+	//for (int32 i = 0; i < Items.Num(); ++i)
+	//{
+	//	if (IsValid(Items[i]))
+	//	{
+	//		if (!AllItem.Contains(Items[i]))
+	//		{
+	//			AllItem.Add(Items[i], IndexToTile(i));
+	//		}
+	//	}
+	//}
+	//return AllItem;
+//}
+
+void UAC_InventoryBaseComponent::RemoveItem(FItemData& ItemObject)
 {
-	if (IsValid(ItemObject))
+	for (auto& Pair : Items)
 	{
-		for (int i = 0; i < Items.Num(); ++i)
+		if (Pair.Value.Index == ItemObject.Index)
 		{
-			if (ItemObject == Items[i])
-			{
-				Items[i] = nullptr;
-				IsDirty = true;
-			}
+			Pair.Value = FItemData();
+			IsDirty = true;
+			break;
 		}
 	}
 }
+
+//void UAC_InventoryBaseComponent::RemoveItem(UItemObject* ItemObject)
+//{
+//	if (IsValid(ItemObject))
+//	{
+//		for (int i = 0; i < Items.Num(); ++i)
+//		{
+//			if (ItemObject == Items[i])
+//			{
+//				Items[i] = nullptr;
+//				IsDirty = true;
+//			}
+//		}
+//	}
+//}
 
 void UAC_InventoryBaseComponent::OnInventoryChanged()
 {

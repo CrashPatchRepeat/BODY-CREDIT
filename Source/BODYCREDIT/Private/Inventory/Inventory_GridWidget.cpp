@@ -131,7 +131,7 @@ void UInventory_GridWidget::Refresh()
 {
 	Canvas_Grid->ClearChildren();
 
-	TMap<UItemObject*, FInventoryTile> AllItem = InventoryBaseComp->GetAllItems();
+	TMap<FItemData, FInventoryTile> AllItem = InventoryBaseComp->GetAllItems();
 
 	for (auto& Item : AllItem)
 	{
@@ -154,18 +154,24 @@ void UInventory_GridWidget::Refresh()
 	}
 }
 
-void UInventory_GridWidget::OnItemRemoved(UItemObject* ItemObject)
+void UInventory_GridWidget::OnItemRemoved(FItemData& ItemObject)
 {
 	if (!IsCurrentlyHovered()) return;
 	InventoryBaseComp->RemoveItem(ItemObject);
 }
+
+//void UInventory_GridWidget::OnItemRemoved(UItemObject* ItemObject)
+//{
+//	if (!IsCurrentlyHovered()) return;
+//	InventoryBaseComp->RemoveItem(ItemObject);
+//}
 
 UItemObject* UInventory_GridWidget::GetPayLoad(UDragDropOperation* Operation)
 {
 	if (!IsCurrentlyHovered()) return nullptr;
 	if (IsValid(Operation))
 	{
-		UItemObject* ItemObject = Cast<UItemObject>(Operation->Payload);
+		FItemData ItemObject = Operation->Payload;
 		return ItemObject;
 	}
 	return nullptr;

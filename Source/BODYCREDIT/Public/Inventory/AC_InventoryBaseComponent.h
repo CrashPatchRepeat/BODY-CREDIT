@@ -8,6 +8,7 @@
 #include "Item/ItemObject.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Inventory/Inventory_ItemWidget.h"
+#include "Item/ItemDT.h"
 #include "AC_InventoryBaseComponent.generated.h"
 
 
@@ -39,28 +40,41 @@ public:
 
 	// Item
 public:
-	bool TryAddItem(class UItemObject* ItemObject);
+	//bool TryAddItem(class UItemObject* ItemObject);
+	bool TryAddItem(FItemData& ItemObject);
 
-	bool IsRoomAvailable(class UItemObject* ItemObject, int32 TopLeftIndex);
+	// bool IsRoomAvailable(class UItemObject* ItemObject, int32 TopLeftIndex);
+	bool IsRoomAvailable(FItemData& ItemObject, int32 TopLeftIndex);
 
 	FInventoryTile IndexToTile(int32 Index); 
 
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<class UItemObject*> Items;*/
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<class UItemObject*> Items;
+	TMap<int32, FItemData> Items;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FItemData, int32> RItems;
 
 	void ForEachIndex(class UItemObject* ItemObject, int32 TopLeftIndex);
 	bool IsTileValid(FInventoryTile& Tile);
-	class UItemObject* GetItemAtIndex(int32 Index);
+
+	//class UItemObject* GetItemAtIndex(int32 Index);
+	FItemData GetItemAtIndex(int32 Index);
 
 	int32 TileToIndex(FInventoryTile& Tile);
 
-	void AddItemAt(class UItemObject* ItemObject, int32 TopLeftIndex);
+	//void AddItemAt(class UItemObject* ItemObject, int32 TopLeftIndex);
+	void AddItemAt(FItemData& ItemObject, int32 TopLeftIndex);
 
 	bool IsDirty = false;
 
-	TMap<UItemObject*, FInventoryTile> GetAllItems();
+	// TMap<UItemObject*, FInventoryTile> GetAllItems();
+	TMap<FItemData, FInventoryTile> GetAllItems();
 
-	void RemoveItem(class UItemObject* ItemObject);
+	//void RemoveItem(class UItemObject* ItemObject);
+	void RemoveItem(FItemData& ItemObject);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryChanged);
 
