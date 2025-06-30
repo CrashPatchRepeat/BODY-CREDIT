@@ -68,7 +68,7 @@ void UCDoAction_Bow::Begin_DoAction()
 	OwnerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 
 	// 2) 라인 트레이스
-	const float TraceDistance = 10000.0f;
+	const float TraceDistance = 3000.0f;
 	FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * TraceDistance);
 
 	FHitResult Hit;

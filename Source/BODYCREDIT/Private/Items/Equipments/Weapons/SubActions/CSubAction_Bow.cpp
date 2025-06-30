@@ -47,6 +47,18 @@ void UCSubAction_Bow::Tick_Implementation(float InDeltaTime)
 	Super::Tick_Implementation(InDeltaTime);
 
 	Timeline.TickTimeline(InDeltaTime);
+
+	if (Bow->Arrows.IsEmpty()) return;
+	if (bInAction == false)
+	{
+		if(!Bow->Arrows.Last()->GetProjectileMovement()->IsActive())
+			Bow->Arrows.Last()->SetActorHiddenInGame(true);
+	}
+	else
+	{
+		if (!Bow->Arrows.Last()->GetProjectileMovement()->IsActive())
+			Bow->Arrows.Last()->SetActorHiddenInGame(false);
+	}
 }
 
 void UCSubAction_Bow::OnAiming(FVector Output)
@@ -95,9 +107,6 @@ void UCSubAction_Bow::Released()
 {
 	CheckFalse(State->IsSubActionMode());
 
-	if (!Bow->Arrows.Last()->GetProjectileMovement()->IsActive())
-		Bow->Arrows.Last()->SetActorHiddenInGame(false);
-
 	if (!!Owner->GetController<AAIController>())
 	{
 		Super::Released();
@@ -106,7 +115,6 @@ void UCSubAction_Bow::Released()
 		return;
 	}
 	
-
 	CheckNull(SpringArm);
 	CheckNull(Camera);
 
