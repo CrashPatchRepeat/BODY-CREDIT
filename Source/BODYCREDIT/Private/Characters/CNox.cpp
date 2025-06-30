@@ -61,6 +61,7 @@ void ACNox::PlayLaunchCharacter(float InLaunchPower)
 	FVector start = GetActorLocation();
 	FVector target = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
 	FVector direction = target - start;
+	direction.Z = 0;
 	direction.Normalize();
 
 	LaunchCharacter(-direction * InLaunchPower, false, false);
