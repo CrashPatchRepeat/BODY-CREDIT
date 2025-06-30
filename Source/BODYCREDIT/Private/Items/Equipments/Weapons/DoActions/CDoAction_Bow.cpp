@@ -158,6 +158,7 @@ void UCDoAction_Bow::OnUnequip()
 
 	for (int32 i = Bow->Arrows.Num() - 1; i >= 0; i--)
 	{
+		if (Bow->Arrows[i]->IsPendingKillEnabled()) continue;
 		if (!!Bow->Arrows[i]->GetAttachParentActor()) Bow->Arrows[i]->Destroy();
 	}
 }
@@ -208,7 +209,9 @@ ACAddOn_Arrow* UCDoAction_Bow::GetAttachedArrow()
 {
 	for (ACAddOn_Arrow* projectile : Bow->Arrows)
 	{
-		if (!!projectile->GetAttachParentActor()) return projectile;
+		if (!projectile->GetAttachParentActor()) continue;
+
+		return projectile;
 	}
 
 	return nullptr;
