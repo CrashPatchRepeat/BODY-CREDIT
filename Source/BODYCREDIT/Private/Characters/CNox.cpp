@@ -59,9 +59,10 @@ void ACNox::PlayHitStop(float InHitStopTime = 0.05f)
 void ACNox::PlayLaunchCharacter(float InLaunchPower)
 {
 	FVector start = GetActorLocation();
+	start.Z = 0;
 	FVector target = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	target.Z = 0;
 	FVector direction = target - start;
-	direction.Z = 0;
 	direction.Normalize();
 
 	LaunchCharacter(-direction * InLaunchPower, false, false);
