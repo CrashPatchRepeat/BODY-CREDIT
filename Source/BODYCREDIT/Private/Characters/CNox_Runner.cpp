@@ -121,6 +121,7 @@ float ACNox_Runner::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	if (IsEscape) return 0.f;
 	HPComp->TakeDamage(DamageAmount);
 	CheckTrueResult(State->IsAvoidMode(), 0);
+	CheckTrueResult(State->IsActionMode(), 0);
 	State->SetHittedMode();
 	return damage;
 }
